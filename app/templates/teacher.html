@@ -37,7 +37,7 @@
                             <label for="source">Source</label>
                         </div>
                         <div class="row">
-                            <textarea type="text" class="form-control" id="source" rows="10"></textarea>
+                            <textarea type="text" ng-model="teacherForm.sourceText" class="form-control" id="source" rows="10" required="required"></textarea>
                         </div>
                     </div>
                 </div>
@@ -55,27 +55,25 @@
                             </div>
                         </div>
                         <div class="row mt-3" ng-repeat="question in teacherForm.questions" ng-show="teacherForm.questions.length">
-                            <input type="text" class="form-control" value="{{question.text}}"/>
+                            <input type="text" class="form-control" value="{{question.text}}" required="required"/>
                         </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <button class="btn btn-primary" ng-click="teacherForm.clear()">Clear</button>
-                    <button type="submit" class="btn btn-primary ml-3" id="submit">Save</button>
+                    <button type="submit" class="btn btn-primary ml-3" id="submit" ng-click="teacherForm.submit()">Save</button>
                 </div>
+                <div class="row alert" role="alert" id="alert"></div>
             </form>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
     <!-- <script src="/static/js/main.js"></script> -->
     <script type="text/javascript">
-        $(document).ready(function () {
-            console.log("ready!");
-        });
         angular.module('teacherFormApp', []).controller('teacherFormController', function () {
+            var alert = $('#alert');
             var teacherForm = this;
             teacherForm.questions = [];
             teacherForm.add = function () {
@@ -85,6 +83,24 @@
             teacherForm.clear = function (str) {
                 teacherForm.questions = [];
                 teacherForm.questionText = '';
+            };
+            teacherForm.submit = function () {
+              alert.text('');
+                var data = {
+                    source: teacherForm.sourceText,
+                    questions: teacherForm.questions
+                }
+                $.post("/", data).done(function ($scope) {
+                    console.log("success");
+                    alert.text("Successfully saved the data :)")
+                    alert.removeClass("alert-danger");
+                    alert.addClass("alert-success");
+                }).fail(function ($scope) {
+                    console.log("error");
+                    alert.text("Failed to save the data :(");
+                    alert.removeClass("alert-success");
+                    alert.addClass("alert-danger");
+                });
             }
         });
     </script>
