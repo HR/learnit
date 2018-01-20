@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  ngrok:
+    container_name: ngrok_tunnel
+    image: wernight/ngrok
+    ports:
+      - "4040:4040"
+    links:
+      - python
+    environment:
+      - NGROK_AUTH=3fVv5QDD6Wh5jDUg7CtEg_6tsUV7Nz5gy1M6vZA7myF
+      - NGROK_PORT=python:5000
+      - NGROK_PROTOCOL=http
+
+  python:
+    container_name: python_app_server
+    build: app/.
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./app:/app"
+    restart: always
+

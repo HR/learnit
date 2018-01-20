@@ -7,6 +7,9 @@ main.py - Run python application
 from __init__ import *
 from app import app
 from views import *
+from api import api
+from db import session
+from models import *
 
 
 def main():
