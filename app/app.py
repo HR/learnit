@@ -2,6 +2,6 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/teacher")
 def main():
-    return "Hello World!"
+    return render_template('teacher.html')
