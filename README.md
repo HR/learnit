@@ -2,7 +2,7 @@
 
 > Make knowledge accessible
 
-A chat bot that tests your knowledge of the content you wanna comprehend.
+An app that assesses your knowledge of the content you want to learn using AI.
 
 ## Setup Environment
 
@@ -15,4 +15,4 @@ pip install -r requirements.txt
 python app/main.py
 ```
 
-Go to `localhost:5000/`
+Go to `localhost:5000`

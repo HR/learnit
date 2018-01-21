@@ -4,8 +4,7 @@
 views.py -
 """
 
-from flask import render_template
-from flask import send_from_directory
+from flask import render_template, redirect, url_for, send_from_directory
 
 from app import app
 
@@ -33,11 +32,11 @@ def server_error(e):
 
 
 @app.route('/')
-def index():
+def hello():
     """
-    Splash page
+    Redirect to Teacher page for root
     """
-    return send_from_directory(views_root, 'index.html')
+    return redirect(url_for('teacher'))
 
 
 @app.route('/teacher')
