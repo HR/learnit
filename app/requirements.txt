@@ -1,3 +1,6 @@
 flask
 flask-restful
 sqlalchemy
+tensorflow
+keras
+h5py

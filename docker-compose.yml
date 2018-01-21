@@ -23,3 +23,17 @@ services:
       - "./app:/app"
     restart: always
 
+  # spark:
+  #   container_name: spart_chatbot
+  #   build: spark/.
+  #   ports:
+  #     - "5001:4040"
+  #     - "5002:5000"
+  #   volumes:
+  #     - ./spark/hello_bot:/workspace
+  #     - ./spark/helpers:/workspace/helpers
+  #     - ./spark/config:/opt/config0
+  #   environment:
+  #     - PYTHONPATH=/workspace/
+  #   entrypoint: /workspace/run.sh
+  #   restart: always
