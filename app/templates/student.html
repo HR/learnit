@@ -104,8 +104,8 @@
                       answer: studentForm.answer
                     }
                     $.post("/learn", data).done(function (res) {
-                        console.log("success, res: ", JSON.stringify(res));
-                        if (res.correct) {
+                        console.log("success, answer correct? " + res.correct);
+                        if (res.correct === 1) {
                           alert.text("Your answer is correct :)")
                           alert.removeClass("alert-danger");
                           alert.addClass("alert-success");

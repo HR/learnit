@@ -8,14 +8,17 @@ import pickle
 
 
 def model_api(text, question, answer):
-    path_to_model = 'app/static/trainedModel1.h5'
+    path_to_model = 'static/trainedModel1.h5'
     model = load_model(path_to_model)
     query = [str(text) + ' ' + str(question) + ' ' + str(answer)]
-    path_to_pickle = 'app/static/tokenizer.pickle'
+    path_to_pickle = 'static/tokenizer.pickle'
     p = open(path_to_pickle, 'rb')
     tokenizer = pickle.load(p)
-    query_sequences_int = pad_sequences(tokenizer.texts_to_sequences(query), maxlen=2000)
-    result = model.predict(query_sequences_int)
+    print(tokenizer)
+    query_sequences_int = pad_sequences(
+        tokenizer.texts_to_sequences(query), maxlen=2000)
+    result = model.predict(query_sequences_int)[0]
+    print(result)
     return result[0] < result[1]
 
 
