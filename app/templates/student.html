@@ -48,8 +48,9 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary" id="submit" ng-click="studentForm.submit()">Check</button>
+                        <button type="submit" class="btn btn-primary" ng-click="studentForm.prev()">Previous</button>
                         <button type="submit" class="btn btn-primary ml-2" ng-click="studentForm.next()">Next</button>
+                        <button type="submit" class="btn btn-primary" id="submit" ng-click="studentForm.submit()" style="float: right">Check</button>
                     </div>
                 </div>
                 <div class="row alert" role="alert" id="alert"></div>
@@ -76,8 +77,19 @@
                 }
                 studentForm.next = function () {
                     // Update next question
-                    if (source.currentQuestion < source.questions.length - 1) {
+                    if (source.currentQuestion + 1 < source.questions.length) {
                         source.currentQuestion++;
+                        studentForm.source.question = source.questions[source.currentQuestion];
+                        window.localStorage.setItem("sources", JSON.stringify(source));
+                    } else {
+                        // done
+                    }
+                };
+
+                studentForm.prev = function () {
+                    // Update next question
+                    if (source.currentQuestion - 1 >= 0) {
+                        source.currentQuestion--;
                         studentForm.source.question = source.questions[source.currentQuestion];
                         window.localStorage.setItem("sources", JSON.stringify(source));
                     } else {
@@ -87,7 +99,7 @@
                 studentForm.submit = function () {
                     alert.text('');
                     var data = {
-                      
+
                     }
                     $.post("/learn", data).done(function ($scope) {
                         console.log("success");
