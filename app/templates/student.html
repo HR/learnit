@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <textarea type="text" class="form-control" id="answer" rows="10" required="required"></textarea>
+                        <textarea type="text" class="form-control" ng-model="studentForm.answer" id="answer" rows="10" required="required"></textarea>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -100,13 +100,14 @@
                     alert.text('');
                     var data = {
                       source: studentForm.source.source,
-                      question: studentForm.source.question
+                      question: studentForm.source.question,
+                      answer: studentForm.answer
                     }
                     $.post("/learn", data).done(function (res) {
-                        console.log("success, res: ", res);
-                        alert.text("Your answer is correct :)")
-                        alert.removeClass("alert-danger");
-                        alert.addClass("alert-success");
+                        console.log("success, res: ", JSON.stringify(res));
+                        // alert.text("Your answer is correct :)")
+                        // alert.removeClass("alert-danger");
+                        // alert.addClass("alert-success");
 
                         // alert.text("Your answer is wrong! Try again :)");
                         // alert.removeClass("alert-success");
