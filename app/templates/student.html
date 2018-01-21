@@ -105,13 +105,15 @@
                     }
                     $.post("/learn", data).done(function (res) {
                         console.log("success, res: ", JSON.stringify(res));
-                        // alert.text("Your answer is correct :)")
-                        // alert.removeClass("alert-danger");
-                        // alert.addClass("alert-success");
-
-                        // alert.text("Your answer is wrong! Try again :)");
-                        // alert.removeClass("alert-success");
-                        // alert.addClass("alert-danger");
+                        if (res.correct) {
+                          alert.text("Your answer is correct :)")
+                          alert.removeClass("alert-danger");
+                          alert.addClass("alert-success");
+                        } else {
+                          alert.text("Your answer is wrong! Try again :)");
+                          alert.removeClass("alert-success");
+                          alert.addClass("alert-danger");
+                        }
                     }).fail(function () {
                         console.log("error");
                         alert.text("Oops, request to server failed! Try again :)");
