@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en" ng-app="teacherFormApp">
+<html class="no-js" lang="en" ng-app="teacherApp">
     <head>
         <head>
             <meta charset="utf-8">
@@ -30,6 +30,7 @@
             </div>
         </nav>
         <div class="container mt-4" ng-controller="teacherFormController as teacherForm">
+            <h3>Add source</h3>
             <form>
                 <div class="form-group row">
                     <div class="col-sm-12">
@@ -66,15 +67,33 @@
                 <div class="row alert" role="alert" id="alert"></div>
             </form>
         </div>
+        <div class="container mt-4" ng-controller="teacherSourcesController as teacherSources">
+            <h3>Your Source</h3>
+            <div class="alert alert-info" ng-show="!teacherSources.source">No sources. Please set them above</div>
+            <div class="mt-3" ng-show="teacherSources.source">
+                <div class="row">
+                    <h6>Source</h6>
+                </div>
+                <div class="row">
+                    <p>{{teacherSources.source.source}}</p>
+                </div>
+                <div class="row mt-3">
+                    <h6>Questions</h6>
+                </div>
+                <div class="row" ng-repeat="question in teacherSources.source.questions" ng-show="teacherSources.source.questions.length">
+                  {{question.text}}
+                </div>
+            </div>
+        </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
     <!-- <script src="/static/js/main.js"></script> -->
     <script type="text/javascript">
-        angular.module('teacherFormApp', []).controller('teacherFormController', function () {
-            var alert = $('#alert');
-            var teacherForm = this;
+        angular.module('teacherApp', []).controller('teacherFormController', function () {
+            var alert = $('#alert'),
+                teacherForm = this;
             teacherForm.questions = [];
             teacherForm.add = function () {
                 teacherForm.questions.push({text: teacherForm.questionText});
@@ -85,22 +104,24 @@
                 teacherForm.questionText = '';
             };
             teacherForm.submit = function () {
-              alert.text('');
+                alert.text('');
                 var data = {
+                    currentQuestion: 0,
                     source: teacherForm.sourceText,
                     questions: teacherForm.questions
                 }
-                $.post("/", data).done(function ($scope) {
-                    console.log("success");
-                    alert.text("Successfully saved the data :)")
-                    alert.removeClass("alert-danger");
-                    alert.addClass("alert-success");
-                }).fail(function ($scope) {
-                    console.log("error");
-                    alert.text("Failed to save the data :(");
-                    alert.removeClass("alert-success");
-                    alert.addClass("alert-danger");
-                });
+                window.localStorage.setItem("sources", JSON.stringify(data));
+                alert.text("Successfully saved the data :)");
+                alert.addClass("alert-success");
+                // $.post("/source", data).done(function ($scope) {     console.log("success"); alert.text("Successfully saved the data :)") alert.removeClass("alert-danger"); alert.addClass("alert-success"); }).fail(function ($scope) {     console.log("error");
+                // alert.text("Failed to save the data :(");     alert.removeClass("alert-success");     alert.addClass("alert-danger"); });
+            }
+        }).controller('teacherSourcesController', function () {
+            var teacherSources = this,
+                data = localStorage.getItem("sources");
+
+            if (data !== null) {
+                teacherSources.source = source = JSON.parse(data);
             }
         });
     </script>

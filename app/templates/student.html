@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" ng-app="studentApp">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="/static/css/main.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -26,34 +27,82 @@
                 </ul>
             </div>
         </nav>
-        <div class="container mt-4">
-            <form>
+        <div class="container mt-4" ng-controller="studentFormController as studentForm">
+            <form ng-show="studentForm.source">
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <h3 id="question">Question 1</h3>
+                        <h5>Source</h5>
+                        <p>{{studentForm.source.source}}</p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <textarea type="text" class="form-control" id="answer" rows="10"></textarea>
+                        <h3 id="question">Q:
+                            {{studentForm.source.question.text}}</h3>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary" id="submit">Check</button>
+                        <textarea type="text" class="form-control" id="answer" rows="10" required="required"></textarea>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary" id="submit" ng-click="studentForm.submit()">Check</button>
+                        <button type="submit" class="btn btn-primary ml-2" ng-click="studentForm.next()">Next</button>
+                    </div>
+                </div>
+                <div class="row alert" role="alert" id="alert"></div>
             </form>
+            <div class="alert alert-info" ng-show="!studentForm.source">No sources. Please set them in /teacher</div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
         <!-- <script src="/static/js/main.js"></script> -->
         <script type="text/javascript">
-            $(document).ready(function () {
-                console.log("ready!");
+            angular.module('studentApp', []).controller('studentFormController', function () {
+                var alert = $('#alert'),
+                    studentForm = this,
+                    data = localStorage.getItem("sources");
+                if (data !== null) {
+                    var source = JSON.parse(data);
+                    studentForm.source = {
+                        source: source.source,
+                        question: source.questions[source.currentQuestion]
+                    }
+                } else {
+                    // Display no question
+                }
+                studentForm.next = function () {
+                    // Update next question
+                    if (source.currentQuestion < source.questions.length - 1) {
+                        source.currentQuestion++;
+                        studentForm.source.question = source.questions[source.currentQuestion];
+                        window.localStorage.setItem("sources", JSON.stringify(source));
+                    } else {
+                        // done
+                    }
+                };
+                studentForm.submit = function () {
+                    alert.text('');
+                    var data = {
+                      
+                    }
+                    $.post("/learn", data).done(function ($scope) {
+                        console.log("success");
+                        alert.text("Your answer is correct :)")
+                        alert.removeClass("alert-danger");
+                        alert.addClass("alert-success");
+                    }).fail(function ($scope) {
+                        console.log("error");
+                        alert.text("Your answer is wrong! Try again :)");
+                        alert.removeClass("alert-success");
+                        alert.addClass("alert-danger");
+                    });
+                }
             });
+            // $(document).ready(function () {     console.log("ready!"); });
         </script>
     </body>
 </html>
